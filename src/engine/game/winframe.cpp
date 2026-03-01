@@ -1,7 +1,100 @@
 #include <windows.h>
 #include <cstring>
+#include <cstdio>
 #include "..\engine\ChromeEngine.h"
 #include "..\kernel\ttl\string.h"
+
+typedef HRESULT (WINAPI *SHGETFOLDERPATH)(HWND, int, HANDLE, DWORD, LPSTR);
+
+// FUNCTION: DEADISLANDGAME 0x00401000
+SHGETFOLDERPATH LocateAndLoadGetFolderPath()
+{
+    OSVERSIONINFOEXA os;
+    memset(&os, 0, sizeof(os));
+    os.dwOSVersionInfoSize = sizeof(os);
+
+    if (!GetVersionExA((LPOSVERSIONINFOA)&os))
+        return NULL;
+
+    HMODULE hModule;
+    if (os.dwMajorVersion >= 5)
+        hModule = GetModuleHandleA("shell32.dll");
+    else
+        hModule = LoadLibraryA("SHFolder.dll");// Fallback for Win9x/early 2000
+
+    if (!hModule)
+        return NULL;
+
+    return (SHGETFOLDERPATH)GetProcAddress(hModule, "SHGetFolderPathA");
+}
+
+char aCommandLine[1024];
+int nArgCount;
+char *aArg[64];
+
+// FUNCTION: DEADISLANDGAME 0x00401070
+void ReadCmdLine(char *lpCL, HMODULE hInstance)
+{
+    GetModuleFileNameA(hInstance, aCommandLine, 256);
+    nArgCount = 1;
+    aArg[0] = aCommandLine;
+
+    char *dst = aCommandLine + lstrlenA(aCommandLine) + 1;
+    char *src = lpCL;
+
+    while (*src)
+    {
+        while (*src == ' ' || *src == '\t')
+            src++;
+        if (!*src)
+			break;
+
+        aArg[nArgCount++] = dst;
+
+        while (*src && *src != ' ' && *src != '\t')
+            *dst++ = *src++;
+
+        *dst++ = '\0';
+    }
+}
+
+// FUNCTION: DEADISLANDGAME 0x00401100
+bool CheckFreeDiskSpaceAndDisplayWarning(LPCSTR drive_path){
+	CreateDirectoryA(drive_path, 0);
+
+	ULARGE_INTEGER bytes_available;
+	if (!GetDiskFreeSpaceExA(drive_path, &bytes_available, NULL, NULL))
+        return false;
+
+    if ((bytes_available.QuadPart / (1024 * 1024)) < 200)
+    {
+        return false;
+    }
+
+	DWORD dwCaption = 1024;
+	DWORD dwText = 1024;
+	char caption[1024] = {0};
+	char text[1024] = {0};
+
+	HKEY hKey;
+	if ( !RegOpenKeyExA(HKEY_LOCAL_MACHINE, "SOFTWARE\\Techland\\DeadIsland", 0, 1u, &hKey) )
+	{
+		RegQueryValueExA(hKey, "FreeDiskSpaceWarningCaption", 0, 0, (LPBYTE)caption, &dwCaption);
+		RegQueryValueExA(hKey, "FreeDiskSpaceWarningText", 0, 0, (LPBYTE)text, &dwText);
+		RegCloseKey(hKey);
+	}
+
+	if (!caption[0])
+		strcpy_s(caption, 1024, "Free disk space warning");
+
+	if (!text[0])
+		strcpy_s(text, 1024, "You have insufficient disk space on drive %s\nPlease free up %d MB of disk space and run this game again.");
+
+	char text2[1024];
+	sprintf_s(text2, text);
+
+	return MessageBoxA(NULL, text2, caption, MB_ICONWARNING || MB_OKCANCEL) != 1;
+}
 
 // FUNCTION: DEADISLANDGAME 0x00401290
 bool CheckMultipleInstances(PSTR command_line){
@@ -43,7 +136,7 @@ bool CheckMultipleInstances(PSTR command_line){
 }
 
 // FUNCTION: DEADISLANDGAME 0x004013D0
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nCmdShow){
+int WINAPI WinMain(HINSTANCE hWinInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nCmdShow){
 	tagMSG stMsg;
 	memset(&stMsg, 0, sizeof(stMsg));
 	
@@ -85,5 +178,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	
 	}
 	*/
+	ReadCmdLine(lpCmdLine, hWinInstance);
+	LocateAndLoadGetFolderPath();
+
+	//fs::init(acStack_6fc,local_954,"out/cache",false,true);
+	if (!CheckFreeDiskSpaceAndDisplayWarning(lpCmdLine)) {
+		//free(pvStack_91c);
+		return 0;
+	}
+
 	return 0;
 }

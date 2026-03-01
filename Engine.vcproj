@@ -60,7 +60,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)\$(ProjectName)_x86_d.exe"
+				OutputFile="$(OutDir)\$(ProjectName)_x86_d.dll"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\$(ProjectName)_x86_d.pdb"
@@ -132,7 +132,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)\$(ProjectName)_x86_rd.exe"
+				OutputFile="$(OutDir)\$(ProjectName)_x86_rd.dll"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\$(ProjectName)_x86_rd.pdb"
@@ -286,7 +286,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)\$(ProjectName)_x86_r.exe"
+				OutputFile="$(OutDir)\$(ProjectName)_x86_r.dll"
 				LinkIncremental="1"
 				GenerateDebugInformation="false"
 				SubSystem="2"

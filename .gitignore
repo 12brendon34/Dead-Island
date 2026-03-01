@@ -2,3 +2,5 @@ reccmp-user.yml
 reccmp-build.yml
 *.suo
 *.user
+/bin
+*.ncb
