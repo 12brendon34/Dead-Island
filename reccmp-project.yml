@@ -1,0 +1,27 @@
+targets:
+  ENGINE_X86_RWDI:
+    filename: engine_x86_rwdi.dll
+    source_root: src
+    hash:
+      sha256: d8921b357c78fc5399a72483665ad43e7655ebed3728710e9195f690082ffc6f
+    data_sources: []
+    ghidra:
+      ignore_types: []
+      ignore_functions: []
+      name_substitutions: []
+      allow_hash_mismatch: false
+    report:
+      ignore_functions: []
+  DEADISLANDGAME:
+    filename: deadislandgame.exe
+    source_root: src
+    hash:
+      sha256: 7d75505f1ba3dd7b3ae6b6cc46aec2866d1f3c9feb63051db02511a168372b4f
+    data_sources: []
+    ghidra:
+      ignore_types: []
+      ignore_functions: []
+      name_substitutions: []
+      allow_hash_mismatch: false
+    report:
+      ignore_functions: []
