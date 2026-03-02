@@ -3,4 +3,4 @@
 #define ALREADY_RUNNING_MESSAGE     "Dead Island is already running"
 #define REGISTRY_KEY                "SOFTWARE\\Techland\\DeadIsland"
 #define ENGINE_MUTEX_NAME           "Global\\ChromeEngine4DIMutex"
-#include "../../engine/game/winframe.cpp"
+#include "..\..\engine\game\winframe.cpp"
