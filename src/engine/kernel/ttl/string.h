@@ -77,6 +77,58 @@ namespace ttl {
             }
         }
 
+		// FUNCTION: DEADISLANDGAME 0x00401e80
+		void ttl::string_base<char>::resize(unsigned int size)
+		{
+			if (size > m_Capacity)
+			{
+				char *newBuffer = (char *)malloc(size + 1);
+				if (m_Size)
+					memcpy(newBuffer, m_Buffer, m_Size + 1);
+
+				free(m_Buffer);
+				m_Buffer = newBuffer;
+				m_Capacity = size;
+			}
+
+			if (size < m_Size)
+			{
+				m_Buffer[size] = '\0';
+			}
+			else if (size > m_Size)
+			{
+				memset(m_Buffer + m_Size, 0, size - m_Size + 1);
+			}
+
+			m_Size = size;
+		}
+
+		// FUNCTION: DEADISLANDGAME 0x00401F10
+		unsigned int ttl::string_base<char>::find(const char *str, unsigned int offset = 0) const
+		{
+			if (!m_Buffer || !m_Size)
+				return (unsigned int)-1;
+
+			for (unsigned int i = offset; i < m_Size; i++)
+			{
+				const char *needle = str;
+				const char *haystack = m_Buffer + i;
+				
+				while (*needle && (unsigned int)(haystack - m_Buffer) < m_Size)
+				{
+					if (*needle != *haystack)
+						break;
+					needle++;
+					haystack++;
+				}
+
+				if (!*needle)
+					return i;
+			}
+
+			return (unsigned int)-1;
+		}
+
         ~string_base() {
             if (m_Buffer) {
                 free(m_Buffer);

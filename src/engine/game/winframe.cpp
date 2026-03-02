@@ -96,6 +96,19 @@ bool CheckFreeDiskSpaceAndDisplayWarning(LPCSTR drive_path){
 	return MessageBoxA(NULL, text2, caption, MB_ICONWARNING || MB_OKCANCEL) != 1;
 }
 
+#ifndef DEFAULT_ERROR_CAPTION
+#define DEFAULT_ERROR_CAPTION	"Error"
+#endif
+#ifndef ALREADY_RUNNING_MESSAGE
+#define ALREADY_RUNNING_MESSAGE	"Application is already running"
+#endif
+#ifndef REGISTRY_KEY
+#define REGISTRY_KEY	"SOFTWARE\\Techland\\Game"
+#endif
+#ifndef ENGINE_MUTEX_NAME
+#define ENGINE_MUTEX_NAME	"Global\\ChromeEngineMutex"
+#endif
+
 // FUNCTION: DEADISLANDGAME 0x00401290
 bool CheckMultipleInstances(PSTR command_line){
 	HANDLE MutexA = CreateMutexA(0, 1, "Global\\ChromeEngine4DIMutex");
@@ -120,16 +133,16 @@ bool CheckMultipleInstances(PSTR command_line){
 	char caption[MAX_PATH] = {0};
 	char text[MAX_PATH] = {0};
 
-	if (!RegOpenKeyExA(HKEY_LOCAL_MACHINE, "SOFTWARE\\Techland\\DeadIsland", 0, KEY_QUERY_VALUE, &hKey)){
+	if (!RegOpenKeyExA(HKEY_LOCAL_MACHINE, REGISTRY_KEY, 0, KEY_QUERY_VALUE, &hKey)){
 		RegQueryValueExA(hKey, "AlreadyRunningCaption", 0, 0, (LPBYTE)caption, &dwCaption);
 		RegQueryValueExA(hKey, "AlreadyRunningText", 0, 0, (LPBYTE)text, &dwText);
 		RegCloseKey(hKey);
 	}
 	if ( !caption[0] )
-		strcpy_s(caption, MAX_PATH, "Dead Island Error");
+		strcpy_s(caption, MAX_PATH, DEFAULT_ERROR_CAPTION);
 	
 	if ( !text[0] )
-		strcpy_s(text, MAX_PATH, "Dead Island is already running");
+		strcpy_s(text, MAX_PATH, ALREADY_RUNNING_MESSAGE);
 	
 	MessageBoxA(0, text, caption, MAX_PATH);
 	return 0;
@@ -172,12 +185,37 @@ int WINAPI WinMain(HINSTANCE hWinInstance, HINSTANCE hPrevInstance, PSTR lpCmdLi
 	}
 
 	ttl::string_base<char> str(lpCmdLine);
+	unsigned int pos = str.find("-game_dir=");
+	if (pos != -1)
+	{
+		const char *buf;
+		if (str.m_Buffer)
+			buf = str.m_Buffer;
+		else
+			buf = "";
 
-	/*
-	if (str.find("-game_dir=") != -1) {
-	
+		ttl::string_base<char> str2(buf + pos + 10);
+		unsigned int space = str2.find(" ");
+		if (space != -1)
+			str2.resize(space);
+
+		const char *out;
+		if (str2.m_Buffer)
+			out = str2.m_Buffer;
+		else
+			out = "";
+
+		strcpy_s(szCurrDir, MAX_PATH, out);
+		free(str2.m_Buffer);
 	}
-	*/
+
+	HANDLE game_icon = LoadImageA(hWinInstance, (LPCSTR)0xA1, 1u, 0, 0, 0);
+
+
+	MessageBoxA(NULL, DEFAULT_ERROR_CAPTION, DEFAULT_ERROR_CAPTION, MB_ICONWARNING || MB_OKCANCEL);
+
+
+
 	ReadCmdLine(lpCmdLine, hWinInstance);
 	LocateAndLoadGetFolderPath();
 
