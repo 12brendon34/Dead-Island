@@ -326,7 +326,35 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\src\engine\engine\Game\CGame.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\engine\engine\ChromeEngine.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\engine\engine\game\Factory.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\engine\engine\GameObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\engine\engine\GameScript\GSObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\engine\engine\game\IGame.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\engine\engine\Interfaces\RTTI\RTTIObject.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\engine\engine\SerializableObject.cpp"
 				>
 			</File>
 		</Filter>
@@ -336,7 +364,39 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\src\engine\engine\Game\CGame.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\engine\engine\ChromeEngine.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\engine\engine\game\Factory.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\engine\engine\GameObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\engine\engine\GameScript\GSObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\engine\engine\game\IGame.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\engine\engine\resource.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\engine\engine\Interfaces\RTTI\RTTIObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\engine\engine\SerializableObject.h"
 				>
 			</File>
 		</Filter>
@@ -345,6 +405,10 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
+			<File
+				RelativePath=".\src\engine\engine\resource.rc"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

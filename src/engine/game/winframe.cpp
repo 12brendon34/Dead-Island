@@ -148,6 +148,16 @@ bool CheckMultipleInstances(PSTR command_line){
 	return 0;
 }
 
+#ifndef SPLASH_ICON
+#define SPLASH_ICON 0
+#endif
+#ifndef SPLASH_DIALOG
+#define SPLASH_DIALOG 0
+#endif
+#ifndef SPLASH_TITLE
+#define SPLASH_TITLE 0
+#endif
+
 // FUNCTION: DEADISLANDGAME 0x004013D0
 int WINAPI WinMain(HINSTANCE hWinInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nCmdShow){
 	tagMSG stMsg;
@@ -209,8 +219,8 @@ int WINAPI WinMain(HINSTANCE hWinInstance, HINSTANCE hPrevInstance, PSTR lpCmdLi
 		free(str2.m_Buffer);
 	}
 
-	HANDLE game_icon = LoadImageA(hWinInstance, (LPCSTR)0xA1, 1u, 0, 0, 0);
-
+	HICON game_icon = (HICON)LoadImageA(hWinInstance, (LPCSTR)SPLASH_ICON, 1u, 0, 0, 0);
+	ShowSplashscreen(hWinInstance, (LPCSTR)SPLASH_DIALOG, (UINT)SPLASH_TITLE, game_icon);
 
 	MessageBoxA(NULL, DEFAULT_ERROR_CAPTION, DEFAULT_ERROR_CAPTION, MB_ICONWARNING || MB_OKCANCEL);
 
