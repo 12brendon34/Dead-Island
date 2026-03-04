@@ -12,6 +12,19 @@ targets:
       allow_hash_mismatch: false
     report:
       ignore_functions: []
+  FILESYSTEM_X86_RWDI:
+    filename: filesystem_x86_rwdi.dll
+    source_root: src
+    hash:
+      sha256: 81cf7d2d8421e49bfd911f5934a73a4f075a3356a44f2d761eeac442203c9470
+    data_sources: []
+    ghidra:
+      ignore_types: []
+      ignore_functions: []
+      name_substitutions: []
+      allow_hash_mismatch: false
+    report:
+      ignore_functions: []
   DEADISLANDGAME:
     filename: deadislandgame.exe
     source_root: src

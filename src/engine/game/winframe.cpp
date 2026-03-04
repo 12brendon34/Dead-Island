@@ -3,6 +3,9 @@
 #include <cstdio>
 #include "..\engine\ChromeEngine.h"
 #include "..\kernel\ttl\string.h"
+#include "..\kernel\Crash.h"
+#include "..\kernel\CTCParse.h"
+#include <Shlobj.h>
 
 typedef HRESULT (WINAPI *SHGETFOLDERPATH)(HWND, int, HANDLE, DWORD, LPSTR);
 
@@ -111,7 +114,7 @@ bool CheckFreeDiskSpaceAndDisplayWarning(LPCSTR drive_path){
 
 // FUNCTION: DEADISLANDGAME 0x00401290
 bool CheckMultipleInstances(PSTR command_line){
-	HANDLE MutexA = CreateMutexA(0, 1, "Global\\ChromeEngine4DIMutex");
+	HANDLE MutexA = CreateMutexA(0, 1, ENGINE_MUTEX_NAME);
 	HKEY__ *hKey;
 
 	// allow multi instance
@@ -157,6 +160,9 @@ bool CheckMultipleInstances(PSTR command_line){
 #ifndef SPLASH_TITLE
 #define SPLASH_TITLE 0
 #endif
+
+char argGameName[MAX_PATH];
+char argPreGameName[MAX_PATH];
 
 // FUNCTION: DEADISLANDGAME 0x004013D0
 int WINAPI WinMain(HINSTANCE hWinInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nCmdShow){
@@ -222,18 +228,77 @@ int WINAPI WinMain(HINSTANCE hWinInstance, HINSTANCE hPrevInstance, PSTR lpCmdLi
 	HICON game_icon = (HICON)LoadImageA(hWinInstance, (LPCSTR)SPLASH_ICON, 1u, 0, 0, 0);
 	ShowSplashscreen(hWinInstance, (LPCSTR)SPLASH_DIALOG, (UINT)SPLASH_TITLE, game_icon);
 
-	MessageBoxA(NULL, DEFAULT_ERROR_CAPTION, DEFAULT_ERROR_CAPTION, MB_ICONWARNING || MB_OKCANCEL);
+	HKEY hKey;
+	char Data[MAX_PATH]; 
+	memset(Data, 0, sizeof(Data));
+	
+	DWORD dwData = MAX_PATH;
+	DWORD dwSize = MAX_PATH;
+	bool bUseMyDocuments = false;
 
-
+	if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, REGISTRY_KEY, 0, KEY_READ, &hKey) == ERROR_SUCCESS)
+	{
+		LONG lResult = RegQueryValueExA(hKey, "WriteDir", NULL, NULL, (LPBYTE)Data, &dwSize);
+		RegCloseKey(hKey);
+		bUseMyDocuments = (lResult == ERROR_SUCCESS);
+	}
+	UninitSymInfo();
+	
+	const char* gameName = "DI";
+	int write_path_flags = 1;
+	const char* game_directory = gameName;
+	CTCPARSE_KEYWORD* pK = 0;
+	const char* pRoot = "game.ini";
 
 	ReadCmdLine(lpCmdLine, hWinInstance);
-	LocateAndLoadGetFolderPath();
-
-	//fs::init(acStack_6fc,local_954,"out/cache",false,true);
-	if (!CheckFreeDiskSpaceAndDisplayWarning(lpCmdLine)) {
-		//free(pvStack_91c);
-		return 0;
+	for (int i = 0; i < nArgCount; ++i) //for glob
+	{
+		//override ini
+		if (strncmp(aArg[i], "ini=", 4) == 0)
+		{
+			pRoot = aArg[i] + 4;
+		}
+		//override game name
+		else if (strncmp(aArg[i], "gn=", 3) == 0)
+		{
+			strcpy_s(argGameName, MAX_PATH, aArg[i] + 3);
+			gameName = argGameName;
+		}
+		//not really sure what this changes
+		else if (strncmp(aArg[i], "pre=", 4) == 0)
+		{
+			strcpy_s(argPreGameName, MAX_PATH, aArg[i] + 4);
+			pK = reinterpret_cast<CTCPARSE_KEYWORD*>(argPreGameName); //idk seems weird
+		}
 	}
+
+	game_directory = gameName;
+
+	//fallback to engine if gameName is empty (like if the user fucked it up with gn=)
+	if (strlen(gameName) == 0)
+	{
+		gameName = "Engine";
+		game_directory = "Engine";
+	}
+
+	char szPath[260];
+    SHGETFOLDERPATH FolderPath = LocateAndLoadGetFolderPath();
+    if (bUseMyDocuments && Data[0] && FolderPath != NULL && FolderPath(NULL, CSIDL_PERSONAL, NULL, SHGFP_TYPE_CURRENT, szPath) >= 0)
+    {
+        // write to documents folder
+        strcat_s(szPath, MAX_PATH, "\\");
+        strcat_s(szPath, MAX_PATH, Data);
+    }
+    else
+    {
+        // fallback to DI\out
+        strcpy_s(szPath, MAX_PATH, szCurrDir);
+        strcat_s(szPath, MAX_PATH, gameName);
+        strcat_s(szPath, MAX_PATH, "\\out");
+        write_path_flags = 5;
+    }
+	//I don't want to deal with this rn
+	//fs::init((fs *)szPath, (const char *)write_path_flags, "out/cache", 0, 1, v45);
 
 	return 0;
 }

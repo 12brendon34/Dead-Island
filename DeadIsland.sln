@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DeadIslandGame", "DeadIslandGame.vcproj", "{C4539FE2-DECB-4A4C-A6CF-F263C5BE553A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "deadislandgame", "DeadIslandGame.vcproj", "{C4539FE2-DECB-4A4C-A6CF-F263C5BE553A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine", "Engine.vcproj", "{AAD131F2-6452-4B76-B21C-656F879C1C75}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "engine", "Engine.vcproj", "{AAD131F2-6452-4B76-B21C-656F879C1C75}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "filesystem", "Filesystem.vcproj", "{D1EF7CBA-5FA9-425C-9C6C-D83F0C8C264F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +31,14 @@ Global
 		{AAD131F2-6452-4B76-B21C-656F879C1C75}.Release With Debug Info|Win32.Build.0 = Release With Debug Info|Win32
 		{AAD131F2-6452-4B76-B21C-656F879C1C75}.Release|Win32.ActiveCfg = Release|Win32
 		{AAD131F2-6452-4B76-B21C-656F879C1C75}.Release|Win32.Build.0 = Release|Win32
+		{D1EF7CBA-5FA9-425C-9C6C-D83F0C8C264F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D1EF7CBA-5FA9-425C-9C6C-D83F0C8C264F}.Debug|Win32.Build.0 = Debug|Win32
+		{D1EF7CBA-5FA9-425C-9C6C-D83F0C8C264F}.Release Debug|Win32.ActiveCfg = Release Debug|Win32
+		{D1EF7CBA-5FA9-425C-9C6C-D83F0C8C264F}.Release Debug|Win32.Build.0 = Release Debug|Win32
+		{D1EF7CBA-5FA9-425C-9C6C-D83F0C8C264F}.Release With Debug Info|Win32.ActiveCfg = Release With Debug Info|Win32
+		{D1EF7CBA-5FA9-425C-9C6C-D83F0C8C264F}.Release With Debug Info|Win32.Build.0 = Release With Debug Info|Win32
+		{D1EF7CBA-5FA9-425C-9C6C-D83F0C8C264F}.Release|Win32.ActiveCfg = Release|Win32
+		{D1EF7CBA-5FA9-425C-9C6C-D83F0C8C264F}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
