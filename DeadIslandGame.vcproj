@@ -322,6 +322,10 @@
 			ReferencedProjectIdentifier="{AAD131F2-6452-4B76-B21C-656F879C1C75}"
 			RelativePathToProject=".\Engine.vcproj"
 		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{D1EF7CBA-5FA9-425C-9C6C-D83F0C8C264F}"
+			RelativePathToProject=".\Filesystem.vcproj"
+		/>
 	</References>
 	<Files>
 		<Filter
@@ -360,11 +364,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\games\deadislandgame\resource.h"
+				RelativePath=".\resource.h"
 				>
 			</File>
 			<File
-				RelativePath=".\resource.h"
+				RelativePath=".\src\games\deadislandgame\resource.h"
 				>
 			</File>
 			<File

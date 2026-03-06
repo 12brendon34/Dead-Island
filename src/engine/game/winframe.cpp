@@ -6,6 +6,7 @@
 #include "..\kernel\Crash.h"
 #include "..\kernel\CTCParse.h"
 #include <Shlobj.h>
+#include "..\filesystem\Filesystem.h"
 
 typedef HRESULT (WINAPI *SHGETFOLDERPATH)(HWND, int, HANDLE, DWORD, LPSTR);
 
@@ -297,8 +298,57 @@ int WINAPI WinMain(HINSTANCE hWinInstance, HINSTANCE hPrevInstance, PSTR lpCmdLi
         strcat_s(szPath, MAX_PATH, "\\out");
         write_path_flags = 5;
     }
-	//I don't want to deal with this rn
-	//fs::init((fs *)szPath, (const char *)write_path_flags, "out/cache", 0, 1, v45);
+
+	bool result = fs::init((const char*)szPath, (int)write_path_flags, "out/cache", false, false);
+	if (CheckFreeDiskSpaceAndDisplayWarning(szPath)){
+
+		char szPakName[MAX_PATH];
+		char szDataPath[MAX_PATH];
+		char szAltPath[MAX_PATH];
+
+		for (int i = 0; i < 64; ++i)
+		{
+			sprintf_s(szPakName, MAX_PATH, "%s%s/data%d.pak", szCurrDir, game_directory, i);
+			fs::add_source(szPakName, (const char*)1, v38);
+		}
+
+		strcpy_s(szDataPath, MAX_PATH, szCurrDir);
+		strcat_s(szDataPath, MAX_PATH, game_directory);
+		strcat_s(szDataPath, MAX_PATH, "/Data");
+		fs::add_source(szDataPath, (const char*)7, v36);
+
+		strcpy_s(szAltPath, MAX_PATH, szCurrDir);
+		strcat_s(szAltPath, MAX_PATH, gameName);
+		strcat_s(szAltPath, MAX_PATH, "_temp/Data");
+		fs::add_source(szAltPath, (const char*)5, v50);
+
+		if (pRoot && *pRoot)
+		{
+			strcpy_s(szAltPath, MAX_PATH, szCurrDir);
+			strcat_s(szAltPath, MAX_PATH, pRoot);
+			strcat_s(szAltPath, MAX_PATH, "/Data");
+			fs::add_source(szAltPath, (const char*)7, v39);
+		}
+
+		strcpy_s(szAltPath, MAX_PATH, szCurrDir);
+		strcat_s(szAltPath, MAX_PATH, "Engine/Data");
+		fs::add_source(szAltPath, (const char*)7, v40);
+
+		char szMpakName[MAX_PATH];
+		for (int j = 0; j < 64; ++j)
+		{
+			sprintf_s(szMpakName, MAX_PATH, "%s%s/data%d.mpak", szCurrDir, gameName, j);
+			fs::add_source(szMpakName, (const char*)0x23, v41);
+		}
+
+		LPSTR CommandLineA = GetCommandLineA();
+		//if (strstr(CommandLineA, "/repltest"))
+		//	Net::Repl::RunTest((Net::Repl *)pK);
+
+		char szGameScriptDLL[260]; 
+        _strcpy_s(&szClass[16], MAX_PATH, "Game");
+        _strcpy_s(&szGameScriptDLL[16], MAX_PATH, &szExeDir[16]);
+	}
 
 	return 0;
 }
